@@ -15,11 +15,11 @@ namespace CounterApp
         {
             transform.Find("ButtonAdd").GetComponent<Button>().onClick.AddListener(() =>
             {
-                CounterModel.Count.Value++;
+                new AddCountCommand().Execute();
             });
             transform.Find("ButtonSub").GetComponent<Button>().onClick.AddListener(() =>
             {
-                CounterModel.Count.Value--;
+                new SubCountCommand().Execute();
             });
         }
         private void OnDestroy()
