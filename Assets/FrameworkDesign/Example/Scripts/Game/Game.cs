@@ -22,6 +22,5 @@ namespace FrameworkDesign.Example
             if (GameModel.KillCount < 10) return;
             GamePassEvent.Trigger();
         }
-
     }
 }

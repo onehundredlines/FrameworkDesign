@@ -9,6 +9,5 @@ namespace FrameworkDesign.Example
             Destroy(gameObject);
             KilledOneEnemyEvent.Trigger();
         }
-        
     }
 }
