@@ -7,6 +7,7 @@ namespace FrameworkDesign.Example
     {
         [SerializeField]
         private Button startButton;
+        private void OnEnable() { startButton = transform.Find("StartButton").GetComponent<Button>(); }
         private void Start()
         {
             startButton.onClick.AddListener(() =>
