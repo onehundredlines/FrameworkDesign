@@ -11,7 +11,7 @@ namespace FrameworkDesign.Example
         {
             if (gamePassPanel.activeSelf)
             {
-                gamePassPanel.gameObject.SetActive(false);
+                gamePassPanel.SetActive(false);
             }
         }
         private void OnMouseDown()
@@ -20,9 +20,9 @@ namespace FrameworkDesign.Example
             ++killedEnemyCount;
             if (killedEnemyCount >= 10)
             {
-                gamePassPanel.gameObject.SetActive(true);
+                GamePassEvent.Trigger();
             }
         }
+        
     }
-
 }
