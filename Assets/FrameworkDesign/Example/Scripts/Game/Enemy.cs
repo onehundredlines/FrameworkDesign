@@ -7,7 +7,7 @@ namespace FrameworkDesign.Example
         private void OnMouseDown()
         {
             Destroy(gameObject);
-            KilledOneEnemyEvent.Trigger();
+            GameModel.KillCount.Value++;
         }
     }
 }

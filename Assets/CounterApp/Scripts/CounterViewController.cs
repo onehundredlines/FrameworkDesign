@@ -1,5 +1,4 @@
-﻿using System;
-using FrameworkDesign;
+﻿using FrameworkDesign;
 using UnityEngine;
 using UnityEngine.UI;
 
