@@ -6,10 +6,15 @@ namespace CounterApp
 {
     public class CounterViewController : MonoBehaviour
     {
+        private CounterModel mCounterModel;
+        private void Awake()
+        {
+            mCounterModel = CounterApp.Get<CounterModel>();
+        }
         private void OnEnable()
         {
-            CounterModel.Instance.Count.OnValueChanged += OnCountChanged;
-            OnCountChanged(CounterModel.Instance.Count.Value);
+            mCounterModel.Count.OnValueChanged += OnCountChanged;
+            OnCountChanged(mCounterModel.Count.Value);
         }
         private void Start()
         {
@@ -22,13 +27,16 @@ namespace CounterApp
                 new SubCountCommand().Execute();
             });
         }
-        private void OnDestroy() { CounterModel.Instance.Count.OnValueChanged -= OnCountChanged; }
+        private void OnDestroy()
+        {
+            mCounterModel.Count.OnValueChanged -= OnCountChanged;
+            mCounterModel = null;
+        }
         private void OnCountChanged(int newValue) { transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString(); }
     }
 
-    public class CounterModel : Singleton<CounterModel>
+    public class CounterModel
     {
-        private CounterModel() { }
-        public BindableProperty<int> Count = new BindableProperty<int>() {Value = 0};
+        public readonly BindableProperty<int> Count = new BindableProperty<int>() {Value = 0};
     }
 }

@@ -21,6 +21,6 @@ namespace FrameworkDesign
                 return instance;
             }
         }
-        private protected Singleton() { }
+        // private protected Singleton(){}
     }
 }
