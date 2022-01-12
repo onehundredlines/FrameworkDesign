@@ -42,7 +42,7 @@ namespace CounterApp
         private void OnCountChanged(int newValue) { transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString(); }
     }
 
-    public interface ICounterModel
+    public interface ICounterModel : IModel
     {
         BindableProperty<int> Count { get; }
     }
@@ -53,5 +53,12 @@ namespace CounterApp
     public class CounterModel : ICounterModel
     {
         public BindableProperty<int> Count { get; } = new BindableProperty<int> {Value = 0};
+        public IArchitecture Architecture { get; set; }
+        public void Init()
+        {
+            var storage = Architecture.GetUtility<IStorage>();
+            Count.Value = storage.LoadInt("COUNTER_COUNT");
+            Count.OnValueChanged += i => storage.SaveInt("COUNTER_COUNT", i);
+        }
     }
 }
