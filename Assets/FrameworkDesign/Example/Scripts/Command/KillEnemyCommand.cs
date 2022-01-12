@@ -4,8 +4,8 @@
     {
         public void Execute()
         {
-            GameModel.KillCount.Value++;
-            if (GameModel.KillCount.Value >= 10)
+            GameModel.Instance.KillCount.Value++;
+            if (GameModel.Instance.KillCount.Value >= 10)
             {
                 GamePassEvent.Trigger();
             }

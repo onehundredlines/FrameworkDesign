@@ -1,11 +1,12 @@
 using UnityEngine;
 namespace FrameworkDesign.Example
 {
-    public class GameModel : MonoBehaviour
+    public class GameModel : Singleton<GameModel>
     {
-        public static BindableProperty<int> KillCount = new BindableProperty<int>();
-        public static BindableProperty<int> Gold = new BindableProperty<int>();
-        public static BindableProperty<int> Score = new BindableProperty<int>();
-        public static BindableProperty<int> HighScore = new BindableProperty<int>();
+        private GameModel() { }
+        public BindableProperty<int> KillCount = new BindableProperty<int>() {Value = 0};
+        public BindableProperty<int> Gold = new BindableProperty<int>() {Value = 0};
+        public BindableProperty<int> Score = new BindableProperty<int>() {Value = 0};
+        public BindableProperty<int> HighScore = new BindableProperty<int>() {Value = 0};
     }
 }

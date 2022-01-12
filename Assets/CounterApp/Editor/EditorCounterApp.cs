@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 namespace CounterApp.Editor
@@ -19,7 +18,7 @@ namespace CounterApp.Editor
             {
                 new AddCountCommand().Execute();
             }
-            GUILayout.Label(CounterModel.Count.Value.ToString());
+            GUILayout.Label(CounterModel.Instance.Count.Value.ToString());
             if (GUILayout.Button("-"))
             {
                 new SubCountCommand().Execute();

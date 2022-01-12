@@ -8,8 +8,8 @@ namespace CounterApp
     {
         private void OnEnable()
         {
-            CounterModel.Count.OnValueChanged += OnCountChanged;
-            OnCountChanged(CounterModel.Count.Value);
+            CounterModel.Instance.Count.OnValueChanged += OnCountChanged;
+            OnCountChanged(CounterModel.Instance.Count.Value);
         }
         private void Start()
         {
@@ -22,18 +22,13 @@ namespace CounterApp
                 new SubCountCommand().Execute();
             });
         }
-        private void OnDestroy()
-        {
-            CounterModel.Count.OnValueChanged -= OnCountChanged;
-        }
-        private void OnCountChanged(int newValue)
-        {
-            transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString();
-        }
+        private void OnDestroy() { CounterModel.Instance.Count.OnValueChanged -= OnCountChanged; }
+        private void OnCountChanged(int newValue) { transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString(); }
     }
 
-    public static class CounterModel
+    public class CounterModel : Singleton<CounterModel>
     {
-        public static BindableProperty<int> Count = new BindableProperty<int>();
+        private CounterModel() { }
+        public BindableProperty<int> Count = new BindableProperty<int>() {Value = 0};
     }
 }
