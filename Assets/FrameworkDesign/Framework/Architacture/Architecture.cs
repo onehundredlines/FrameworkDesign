@@ -8,7 +8,7 @@ namespace FrameworkDesign
     {
         //类似单例，仅可在内部访问。与单例没有访问限制不同，
         private static T mArchitecture;
-        private IOCContainer mContainer = new IOCContainer();
+        private readonly IOCContainer mContainer = new IOCContainer();
         /// <summary>
         /// 确保Container有实例
         /// </summary>
@@ -22,16 +22,16 @@ namespace FrameworkDesign
         protected abstract void Init();
 
         //提供一个获取模块的API
-        public static T Get<T>() where T : class
+        public static K Get<K>() where K : class
         {
             MakeSureArchitecture();
-            return mArchitecture.mContainer.Get<T>();
+            return mArchitecture.mContainer.Get<K>();
         }
         //提供一个注册模块的API
-        public void Register<T>(T instance)
+        protected void Register<K>(K instance)
         {
             MakeSureArchitecture();
-            mArchitecture.mContainer.Register<T>(instance);
+            mArchitecture.mContainer.Register<K>(instance);
         }
     }
 }
