@@ -4,9 +4,9 @@
     {
         public void Execute()
         {
-            var gameModel = PointGame.Get<GameModel>();
+            var gameModel = PointGame.Get<IGameModel>();
             gameModel.KillCount.Value++;
-            if (gameModel.KillCount.Value >= 10)
+            if (gameModel.KillCount.Value >= 9)
             {
                 GamePassEvent.Trigger();
             }
