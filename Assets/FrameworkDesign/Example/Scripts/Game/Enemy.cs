@@ -7,11 +7,8 @@ namespace FrameworkDesign.Example
         private void OnMouseDown()
         {
             Destroy(gameObject);
-            GetArchitecture().SendCommand<KillEnemyCommand>();
+            this.SendCommand<KillEnemyCommand>();
         }
-        public IArchitecture GetArchitecture()
-        {
-            return PointGame.Interface;
-        }
+        IArchitecture IBelongToArchitecture.GetArchitecture() => PointGame.Interface;
     }
 }

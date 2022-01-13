@@ -9,14 +9,11 @@ namespace FrameworkDesign.Example
         {
             transform.Find("StartButton").GetComponent<Button>().onClick.AddListener(() =>
             {
-                GetArchitecture().SendCommand<StartGameCommand>();
+                this.SendCommand<StartGameCommand>();
                 gameObject.SetActive(false);
             });
         }
-        private void OnDestroy() { transform.Find("StartButton").GetComponent<Button>().onClick.RemoveAllListeners(); }
-        public IArchitecture GetArchitecture()
-        {
-            return PointGame.Interface;
-        }
+        private void OnDestroy() => transform.Find("StartButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        IArchitecture IBelongToArchitecture.GetArchitecture() => PointGame.Interface;
     }
 }

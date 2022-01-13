@@ -7,28 +7,16 @@ namespace CounterApp
     public class CounterViewController : MonoBehaviour, IController
     {
         private ICounterModel mCounterModel;
-        private void Awake()
-        {
-            //获取
-            mCounterModel = GetArchitecture().GetModel<ICounterModel>();
-        }
-        private void OnEnable()
-        {
-            //注册
-            mCounterModel.Count.OnValueChanged += OnCountChanged;
-        }
+        //获取
+        private void Awake() => mCounterModel = this.GetModel<ICounterModel>();
+        //注册
+        private void OnEnable() => mCounterModel.Count.OnValueChanged += OnCountChanged;
         private void Start()
         {
-            transform.Find("ButtonAdd").GetComponent<Button>().onClick.AddListener(() =>
-            {
-                //交互逻辑
-                GetArchitecture().SendCommand<AddCountCommand>();
-            });
-            transform.Find("ButtonSub").GetComponent<Button>().onClick.AddListener(() =>
-            {
-                //交互逻辑
-                GetArchitecture().SendCommand<SubCountCommand>();
-            });
+            //交互逻辑
+            transform.Find("ButtonAdd").GetComponent<Button>().onClick.AddListener(() => this.SendCommand<AddCountCommand>());
+            //交互逻辑
+            transform.Find("ButtonSub").GetComponent<Button>().onClick.AddListener(() => this.SendCommand<SubCountCommand>());
             OnCountChanged(mCounterModel.Count.Value);
         }
         private void OnDestroy()
@@ -39,11 +27,8 @@ namespace CounterApp
             mCounterModel = null;
         }
         //表现逻辑
-        private void OnCountChanged(int newValue) { transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString(); }
-        public IArchitecture GetArchitecture()
-        {
-            return CounterApp.Interface;
-        }
+        private void OnCountChanged(int newValue) => transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString();
+        IArchitecture IBelongToArchitecture.GetArchitecture() => CounterApp.Interface;
     }
 
     public interface ICounterModel : IModel
@@ -59,7 +44,7 @@ namespace CounterApp
         public BindableProperty<int> Count { get; } = new BindableProperty<int> {Value = 0};
         protected override void OnInit()
         {
-            var storage = GetArchitecture().GetUtility<IStorage>();
+            var storage = this.GetUtility<IStorage>();
             Count.Value = storage.LoadInt("COUNTER_COUNT");
             Count.OnValueChanged += i => storage.SaveInt("COUNTER_COUNT", i);
         }

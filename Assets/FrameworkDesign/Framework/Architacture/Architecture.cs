@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 namespace FrameworkDesign
 {
     public interface IArchitecture
@@ -17,6 +16,7 @@ namespace FrameworkDesign
         /// 注册Utility工具层
         /// </summary>
         void RegisterUtility<U>(U utility) where U : IUtility;
+        S GetSystem<S>() where S : class, ISystem;
         M GetModel<M>() where M : class, IModel;
         /// <summary>
         /// 获取Utility工具
@@ -49,10 +49,7 @@ namespace FrameworkDesign
         private static T mArchitecture;
         public static IArchitecture Interface {
             get {
-                if (mArchitecture == null)
-                {
-                    MakeSureArchitecture();
-                }
+                if (mArchitecture == null) MakeSureArchitecture();
                 return mArchitecture;
             }
         }
@@ -70,17 +67,11 @@ namespace FrameworkDesign
             //调用
             OnRegisterPatch?.Invoke(mArchitecture);
             //初始化Model，此处先初始化Model，因为Model比System更底层，System是会访问Model的，所以要早于初始化System
-            foreach(var model in mArchitecture.mModelList)
-            {
-                model.Init();
-            }
+            foreach(var model in mArchitecture.mModelList) model.Init();
             //清空Model
             mArchitecture.mModelList.Clear();
             //初始化System，初始化Model之后进行System的初始化
-            foreach(var system in mArchitecture.mSystemList)
-            {
-                system.Init();
-            }
+            foreach(var system in mArchitecture.mSystemList) system.Init();
             //清空System
             mArchitecture.mSystemList.Clear();
             mArchitecture.mInited = true;
@@ -106,13 +97,8 @@ namespace FrameworkDesign
             //给System赋值
             system.SetArchitecture(this);
             mContainer.Register(system);
-            if (!mInited)
-            {
-                mSystemList.Add(system);
-            } else
-            {
-                system.Init();
-            }
+            if (!mInited) mSystemList.Add(system);
+            else system.Init();
         }
         /// <summary>
         /// 注册Model层
@@ -123,15 +109,11 @@ namespace FrameworkDesign
             //给Model赋值
             model.SetArchitecture(this);
             mContainer.Register(model);
-            if (!mInited)
-            {
-                mModelList.Add(model);
-            } else
-            {
-                model.Init();
-            }
+            if (!mInited) mModelList.Add(model);
+            else model.Init();
         }
-        public void RegisterUtility<U>(U utility) where U : IUtility { mContainer.Register(utility); }
+        public void RegisterUtility<U>(U utility) where U : IUtility => mContainer.Register(utility);
+        public S GetSystem<S>() where S : class, ISystem => mContainer.Get<S>();
         /// <summary>
         /// 获取模块
         /// 获取API
@@ -141,8 +123,8 @@ namespace FrameworkDesign
             MakeSureArchitecture();
             return mArchitecture.mContainer.Get<G>();
         }
-        public M GetModel<M>() where M : class, IModel { return mContainer.Get<M>(); }
-        public U GetUtility<U>() where U : class, IUtility { return mContainer.Get<U>(); }
+        public M GetModel<M>() where M : class, IModel => mContainer.Get<M>();
+        public U GetUtility<U>() where U : class, IUtility => mContainer.Get<U>();
         public void SendCommand<N>() where N : ICommand, new()
         {
             var command = new N();

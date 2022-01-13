@@ -9,7 +9,7 @@ namespace CounterApp
     {
         protected override void OnInit()
         {
-            var counterModel = GetArchitecture().GetModel<ICounterModel>();
+            var counterModel = this.GetModel<ICounterModel>();
             var previousCount = counterModel.Count.Value;
             bool count9Unlock = false;
             // 将bool值存储
