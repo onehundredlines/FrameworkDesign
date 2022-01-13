@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 namespace CounterApp
 {
-    public class CounterViewController : MonoBehaviour
+    public class CounterViewController : MonoBehaviour, IController
     {
         private ICounterModel mCounterModel;
         private void Awake()
         {
             //获取
-            mCounterModel = CounterApp.Get<ICounterModel>();
+            mCounterModel = GetArchitecture().GetModel<ICounterModel>();
         }
         private void OnEnable()
         {
@@ -40,6 +40,10 @@ namespace CounterApp
         }
         //表现逻辑
         private void OnCountChanged(int newValue) { transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString(); }
+        public IArchitecture GetArchitecture()
+        {
+            return CounterApp.Interface;
+        }
     }
 
     public interface ICounterModel : IModel
@@ -50,13 +54,12 @@ namespace CounterApp
     /// 不需要是静态的
     /// 不需要是单例
     /// </summary>
-    public class CounterModel : ICounterModel
+    public class CounterModel : AbstractModel, ICounterModel
     {
         public BindableProperty<int> Count { get; } = new BindableProperty<int> {Value = 0};
-        public IArchitecture Architecture { get; set; }
-        public void Init()
+        protected override void OnInit()
         {
-            var storage = Architecture.GetUtility<IStorage>();
+            var storage = GetArchitecture().GetUtility<IStorage>();
             Count.Value = storage.LoadInt("COUNTER_COUNT");
             Count.OnValueChanged += i => storage.SaveInt("COUNTER_COUNT", i);
         }

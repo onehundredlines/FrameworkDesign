@@ -38,6 +38,15 @@ namespace FrameworkDesign
         private List<ISystem> mSystemList = new List<ISystem>();
         // 类似单例，仅可在内部访问。与单例没有访问限制不同
         private static T mArchitecture;
+        public static IArchitecture Interface {
+            get {
+                if (mArchitecture == null)
+                {
+                    MakeSureArchitecture();
+                }
+                return mArchitecture;
+            }
+        }
         private readonly IOCContainer mContainer = new IOCContainer();
         // 注册补丁
         public static Action<T> OnRegisterPatch = architecture => { };
@@ -86,7 +95,7 @@ namespace FrameworkDesign
         public void RegisterSystem<S>(S system) where S : ISystem
         {
             //给System赋值
-            system.Architecture = this;
+            system.SetArchitecture(this);
             mContainer.Register(system);
             if (!mInited)
             {
@@ -103,7 +112,7 @@ namespace FrameworkDesign
         public void RegisterModel<M>(M model) where M : IModel
         {
             //给Model赋值
-            model.Architecture = this;
+            model.SetArchitecture(this);
             mContainer.Register(model);
             if (!mInited)
             {

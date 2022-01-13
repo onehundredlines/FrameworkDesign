@@ -5,12 +5,11 @@ namespace CounterApp
     public interface IAchievementSystem : ISystem
     {
     }
-    public class AchievementSystem : IAchievementSystem
+    public class AchievementSystem : AbstractSystem, IAchievementSystem
     {
-        public IArchitecture Architecture { get; set; }
-        public void Init()
+        protected override void OnInit()
         {
-            var counterModel = Architecture.GetModel<ICounterModel>();
+            var counterModel = GetArchitecture().GetModel<ICounterModel>();
             var previousCount = counterModel.Count.Value;
             bool count9Unlock = false;
             // 将bool值存储
