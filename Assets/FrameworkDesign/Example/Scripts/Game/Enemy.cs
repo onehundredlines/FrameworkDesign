@@ -2,12 +2,16 @@
 
 namespace FrameworkDesign.Example
 {
-    public class Enemy : MonoBehaviour
+    public class Enemy : MonoBehaviour, IController
     {
         private void OnMouseDown()
         {
             Destroy(gameObject);
-            new KillEnemyCommand().Execute();
+            GetArchitecture().SendCommand<KillEnemyCommand>();
+        }
+        public IArchitecture GetArchitecture()
+        {
+            return PointGame.Interface;
         }
     }
 }

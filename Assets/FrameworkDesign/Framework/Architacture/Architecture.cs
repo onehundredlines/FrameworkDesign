@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 namespace FrameworkDesign
 {
     public interface IArchitecture
@@ -15,13 +16,21 @@ namespace FrameworkDesign
         /// <summary>
         /// 注册Utility工具层
         /// </summary>
-        void RegisterUtility<U>(U utility);
+        void RegisterUtility<U>(U utility) where U : IUtility;
         M GetModel<M>() where M : class, IModel;
         /// <summary>
         /// 获取Utility工具
         /// 获取API
         /// </summary>
-        C GetUtility<C>() where C : class;
+        C GetUtility<C>() where C : class, IUtility;
+        /// <summary>
+        /// 创建Command，并将Command发送给Architecture
+        /// </summary>
+        void SendCommand<N>() where N : ICommand, new();
+        /// <summary>
+        /// 将Command发送给Architecture
+        /// </summary>
+        void SendCommand<N>(N command) where N : ICommand;
     }
     /// <summary>
     /// 架构
@@ -122,7 +131,7 @@ namespace FrameworkDesign
                 model.Init();
             }
         }
-        public void RegisterUtility<U>(U utility) { mContainer.Register(utility); }
+        public void RegisterUtility<U>(U utility) where U : IUtility { mContainer.Register(utility); }
         /// <summary>
         /// 获取模块
         /// 获取API
@@ -133,6 +142,19 @@ namespace FrameworkDesign
             return mArchitecture.mContainer.Get<G>();
         }
         public M GetModel<M>() where M : class, IModel { return mContainer.Get<M>(); }
-        public U GetUtility<U>() where U : class { return mContainer.Get<U>(); }
+        public U GetUtility<U>() where U : class, IUtility { return mContainer.Get<U>(); }
+        public void SendCommand<N>() where N : ICommand, new()
+        {
+            var command = new N();
+            command.SetArchitecture(this);
+            command.Execute();
+            // command.SetArchitecture(null);
+        }
+        public void SendCommand<N>(N command) where N : ICommand
+        {
+            command.SetArchitecture(this);
+            command.Execute();
+            // command.SetArchitecture(null);
+        }
     }
 }

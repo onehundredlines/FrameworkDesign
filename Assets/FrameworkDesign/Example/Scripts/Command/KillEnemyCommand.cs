@@ -1,10 +1,13 @@
 ﻿namespace FrameworkDesign.Example
 {
-    public struct KillEnemyCommand : ICommand
+    public class KillEnemyCommand : AbstractCommand
     {
-        public void Execute()
+        /// <summary>
+        /// 在OnExecute中写真正的逻辑
+        /// </summary>
+        protected override void OnExecute()
         {
-            var gameModel = PointGame.Get<IGameModel>();
+            var gameModel = GetArchitecture().GetModel<IGameModel>();
             gameModel.KillCount.Value++;
             if (gameModel.KillCount.Value >= 9)
             {

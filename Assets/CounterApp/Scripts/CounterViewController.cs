@@ -22,12 +22,12 @@ namespace CounterApp
             transform.Find("ButtonAdd").GetComponent<Button>().onClick.AddListener(() =>
             {
                 //交互逻辑
-                new AddCountCommand().Execute();
+                GetArchitecture().SendCommand<AddCountCommand>();
             });
             transform.Find("ButtonSub").GetComponent<Button>().onClick.AddListener(() =>
             {
                 //交互逻辑
-                new SubCountCommand().Execute();
+                GetArchitecture().SendCommand<SubCountCommand>();
             });
             OnCountChanged(mCounterModel.Count.Value);
         }

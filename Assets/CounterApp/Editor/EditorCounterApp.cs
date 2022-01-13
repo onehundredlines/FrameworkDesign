@@ -1,8 +1,10 @@
+using FrameworkDesign;
 using UnityEditor;
+using UnityEditor.Experimental;
 using UnityEngine;
 namespace CounterApp.Editor
 {
-    public class EditorCounterApp : EditorWindow
+    public class EditorCounterApp : EditorWindow, IController
     {
         [MenuItem("EditorCounterApp/Open")]
         static void Open()
@@ -17,14 +19,15 @@ namespace CounterApp.Editor
         {
             if (GUILayout.Button("+"))
             {
-                new AddCountCommand().Execute();
+                GetArchitecture().SendCommand<AddCountCommand>();
             }
             //GUI是实时刷新，直接渲染就行了
             GUILayout.Label(CounterApp.Get<ICounterModel>().Count.Value.ToString());
             if (GUILayout.Button("-"))
             {
-                new SubCountCommand().Execute();
+                GetArchitecture().SendCommand<SubCountCommand>();
             }
         }
+        public IArchitecture GetArchitecture() { return CounterApp.Interface; }
     }
 }
