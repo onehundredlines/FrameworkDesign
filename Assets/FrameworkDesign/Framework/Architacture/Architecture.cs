@@ -87,10 +87,10 @@ namespace FrameworkDesign
         /// <summary>
         /// 注册模块API
         /// </summary>
-        public static void Register<K>(K instance)
+        private static void Register<K>(K instance)
         {
             MakeSureArchitecture();
-            mArchitecture.mContainer.Register<K>(instance);
+            mArchitecture.mContainer.Register(instance);
         }
         /// <summary>
         /// 注册System层

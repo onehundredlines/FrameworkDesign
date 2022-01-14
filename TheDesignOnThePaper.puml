@@ -1,0 +1,61 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+表现层 -right.. 游戏开始
+interface 表现层
+
+游戏中 -left--> 游戏开始
+class 游戏开始
+
+游戏开始 -right--> 游戏中
+class 游戏中
+
+游戏中 -right--> 游戏结束
+class 游戏结束
+
+(游戏中, 游戏结束) .. KillEnemyCommand
+enum KillEnemyCommand
+
+KillEnemyCommand .. GamePassEvent
+enum GamePassEvent
+
+
+interface 系统层
+
+系统层 -right. IScoreSystem
+class IScoreSystem
+
+IScoreSystem - CalculateBestScore
+GamePassEvent . CalculateBestScore
+class CalculateBestScore
+
+
+interface 模型层
+
+模型层 -right.. IGameModel
+interface IGameModel
+
+CalculateBestScore . Score
+IGameModel - Score
+class Score
+
+CalculateBestScore . BestScore
+IGameModel -right- BestScore
+class BestScore
+
+interface 工具层
+
+BestScore --> IStorage
+工具层 -right.. IStorage
+interface IStorage
+
+表现层 -down.. 系统层
+系统层 -down.. 模型层
+模型层 -down.. 工具层
+
+
+
+
+
+@enduml
