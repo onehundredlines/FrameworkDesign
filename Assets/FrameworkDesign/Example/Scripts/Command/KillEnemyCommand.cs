@@ -9,7 +9,7 @@
         {
             var gameModel = this.GetModel<IGameModel>();
             gameModel.KillCount.Value++;
-            if (gameModel.KillCount.Value >= 9) GamePassEvent.Trigger();
+            if (gameModel.KillCount.Value >= 9) this.SendEvent<GamePassEvent>();
         }
     }
 }

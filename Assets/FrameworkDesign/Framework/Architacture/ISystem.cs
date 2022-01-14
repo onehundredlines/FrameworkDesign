@@ -1,6 +1,6 @@
 ﻿namespace FrameworkDesign
 {
-    public interface ISystem : ICanSetArchitecture, ICanGetModel, ICanGetUtility
+    public interface ISystem : ICanSetArchitecture, ICanGetModel, ICanGetUtility, ICanRegisterEvent, ICanSendEvent
     {
         /// <summary>
         /// System本身需要有状态，需要有初始化

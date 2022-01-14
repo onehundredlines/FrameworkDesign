@@ -8,16 +8,16 @@ namespace FrameworkDesign
         /// 注册System系统层
         /// </summary>
         void RegisterSystem<S>(S system) where S : ISystem;
+        S GetSystem<S>() where S : class, ISystem;
         /// <summary>
         /// 注册Model数据层
         /// </summary>
         void RegisterModel<M>(M model) where M : IModel;
+        M GetModel<M>() where M : class, IModel;
         /// <summary>
         /// 注册Utility工具层
         /// </summary>
         void RegisterUtility<U>(U utility) where U : IUtility;
-        S GetSystem<S>() where S : class, ISystem;
-        M GetModel<M>() where M : class, IModel;
         /// <summary>
         /// 获取Utility工具
         /// 获取API
@@ -31,6 +31,10 @@ namespace FrameworkDesign
         /// 将Command发送给Architecture
         /// </summary>
         void SendCommand<N>(N command) where N : ICommand;
+        void SendEvent<E>() where E : new();
+        void SendEvent<E>(E e);
+        IUnregister RegisterEvent<E>(Action<E> onEvent);
+        void UnregisterEvent<E>(Action<E> onEvent);
     }
     /// <summary>
     /// 架构
@@ -138,5 +142,10 @@ namespace FrameworkDesign
             command.Execute();
             // command.SetArchitecture(null);
         }
+        private readonly ITypeEventSystem mTypeEventSystem = new TypeEventSystem();
+        public void SendEvent<E>() where E : new() => mTypeEventSystem.Send<E>();
+        public void SendEvent<E>(E e) => mTypeEventSystem.Send<E>(e);
+        public IUnregister RegisterEvent<E>(Action<E> onEvent) => mTypeEventSystem.Register(onEvent);
+        public void UnregisterEvent<E>(Action<E> onEvent) => mTypeEventSystem.Unregister(onEvent);
     }
 }

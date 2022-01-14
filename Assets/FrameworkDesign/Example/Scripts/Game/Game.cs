@@ -2,17 +2,15 @@ using UnityEngine;
 
 namespace FrameworkDesign.Example
 {
-    public class Game : MonoBehaviour
+    public class Game : MonoBehaviour, IController
     {
         private void Awake()
         {
             transform.Find("Enemies").gameObject.SetActive(false);
-            GameStartEvent.RegisterEvent(OnGameStart);
+            this.RegisterEvent<GameStartEvent>(OnGameStart);
         }
-        private void OnDestroy()
-        {
-            GameStartEvent.UnRegisterEvent(OnGameStart); 
-        }
-        private void OnGameStart() { transform.Find("Enemies").gameObject.SetActive(true); }
+        private void OnDestroy() => this.UnregisterEvent<GameStartEvent>(OnGameStart);
+        private void OnGameStart(GameStartEvent gameStartEvent) => transform.Find("Enemies").gameObject.SetActive(true);
+        public IArchitecture GetArchitecture() => PointGame.Interface;
     }
 }

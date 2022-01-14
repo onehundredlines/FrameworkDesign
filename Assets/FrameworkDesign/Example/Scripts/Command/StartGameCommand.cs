@@ -5,6 +5,6 @@ namespace FrameworkDesign.Example
         /// <summary>
         /// 在OnExecute中写真正的逻辑
         /// </summary>
-        protected override void OnExecute() { GameStartEvent.Trigger(); }
+        protected override void OnExecute() => this.SendEvent<GameStartEvent>();
     }
 }

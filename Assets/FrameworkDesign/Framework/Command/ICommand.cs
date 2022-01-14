@@ -1,6 +1,6 @@
 ﻿namespace FrameworkDesign
 {
-    public interface ICommand : ICanSetArchitecture, ICanGetModel, ICanGetSystem, ICanGetUtility
+    public interface ICommand : ICanSetArchitecture, ICanGetModel, ICanGetSystem, ICanSendCommand, ICanGetUtility, ICanSendEvent
     {
         void Execute();
     }
