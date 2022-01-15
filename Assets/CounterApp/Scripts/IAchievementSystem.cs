@@ -16,7 +16,7 @@ namespace CounterApp
             // var storage = Architecture.GetUtility<IStorage>();
             // storage.SaveInt();
             bool count18Unlock = false;
-            counterModel.Count.OnValueChanged += newCount =>
+            counterModel.Count.RegisterOnValueChanged(newCount =>
             {
                 if (previousCount < 9 && newCount >= 9 && !count9Unlock)
                 {
@@ -28,7 +28,7 @@ namespace CounterApp
                     Debug.Log("解锁：点击18次成就");
                 }
                 previousCount = newCount;
-            };
+            });
         }
     }
 }

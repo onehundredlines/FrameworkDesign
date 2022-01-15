@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 namespace FrameworkDesign.Example
 {
@@ -9,19 +10,22 @@ namespace FrameworkDesign.Example
         protected override void OnInit()
         {
             var gameMode = this.GetModel<IGameModel>();
-            this.RegisterEvent<GamePassEvent>(e =>
+
+            this.RegisterEvent<OnGamePassEvent>(e =>
             {
+                var countDownSystem = this.GetSystem<ICountDownSystem>();
+                var timeScore = countDownSystem.CurrentRemainSeconds * 10;
+                gameMode.Score.Value += timeScore;
+                Debug.Log($"历史最佳分数 {gameMode.BestScore.Value}");
                 Debug.Log($"Score {gameMode.Score.Value}");
-                Debug.Log($"BestScore {gameMode.BestScore.Value}");
                 if (gameMode.Score.Value > gameMode.BestScore.Value)
                 {
-                    Debug.Log($"新纪录");
-                    Debug.Log($"原来最佳分数 {gameMode.BestScore.Value}");
+                    Debug.Log($"历史最佳分数 {gameMode.BestScore.Value}");
                     gameMode.BestScore.Value = gameMode.Score.Value;
-                    Debug.Log($"最佳分数 {gameMode.BestScore.Value}");
+                    Debug.Log($"新纪录{Environment.NewLine}最佳分数 {gameMode.BestScore.Value}");
                 }
             });
-            this.RegisterEvent<OnEnemyKilledEvent>(e =>
+            this.RegisterEvent<OnKillEnemyEvent>(e =>
             {
                 gameMode.Score.Value += 10;
                 Debug.Log("+10分");

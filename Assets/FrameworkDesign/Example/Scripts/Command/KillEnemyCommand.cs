@@ -8,9 +8,13 @@
         protected override void OnExecute()
         {
             var gameModel = this.GetModel<IGameModel>();
-            this.SendEvent<OnEnemyKilledEvent>();
             gameModel.KillCount.Value++;
-            if (gameModel.KillCount.Value >= 9) this.SendEvent<GamePassEvent>();
+            if (UnityEngine.Random.Range(0, 10) < 3)
+            {
+                gameModel.Gold.Value += UnityEngine.Random.Range(1, 3);
+            }
+            this.SendEvent<OnKillEnemyEvent>();
+            if (gameModel.KillCount.Value >= 9) this.SendEvent<OnGamePassEvent>();
         }
     }
 }

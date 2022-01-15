@@ -18,7 +18,7 @@ namespace CounterApp.Editor
         {
             if (GUILayout.Button("+")) this.SendCommand<AddCountCommand>();
             //GUI是实时刷新，直接渲染就行了
-            GUILayout.Label(CounterApp.Get<ICounterModel>().Count.Value.ToString());
+            GUILayout.Label(CounterApp.Interface.GetModel<ICounterModel>().Count.Value.ToString());
             if (GUILayout.Button("-")) this.SendCommand<SubCountCommand>();
         }
         public IArchitecture GetArchitecture() => CounterApp.Interface;

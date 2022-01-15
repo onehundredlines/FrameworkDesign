@@ -33,7 +33,7 @@ namespace FrameworkDesign
         void SendCommand<N>(N command) where N : ICommand;
         void SendEvent<E>() where E : new();
         void SendEvent<E>(E e);
-        IUnregister RegisterEvent<E>(Action<E> onEvent);
+        ICancel RegisterEvent<E>(Action<E> onEvent);
         void CancelEvent<E>(Action<E> onEvent);
     }
     /// <summary>
@@ -42,7 +42,6 @@ namespace FrameworkDesign
     /// <typeparam name="T"></typeparam>
     public abstract class Architecture<T> : IArchitecture where T : Architecture<T>, new()
     {
-
         // 是否初始化完成
         private bool mInited;
         // 缓存要初始化的Model
@@ -117,17 +116,17 @@ namespace FrameworkDesign
             else model.Init();
         }
         public void RegisterUtility<U>(U utility) where U : IUtility => mContainer.Register(utility);
+        /// <summary>
+        /// 获取System模块
+        /// </summary>
         public S GetSystem<S>() where S : class, ISystem => mContainer.Get<S>();
         /// <summary>
-        /// 获取模块
-        /// 获取API
+        /// 获取Model模块
         /// </summary>
-        public static G Get<G>() where G : class
-        {
-            MakeSureArchitecture();
-            return mArchitecture.mContainer.Get<G>();
-        }
         public M GetModel<M>() where M : class, IModel => mContainer.Get<M>();
+        /// <summary>
+        /// 获取Utility模块
+        /// </summary>
         public U GetUtility<U>() where U : class, IUtility => mContainer.Get<U>();
         public void SendCommand<N>() where N : ICommand, new()
         {
@@ -145,7 +144,7 @@ namespace FrameworkDesign
         private readonly ITypeEventSystem mTypeEventSystem = new TypeEventSystem();
         public void SendEvent<E>() where E : new() => mTypeEventSystem.Send<E>();
         public void SendEvent<E>(E e) => mTypeEventSystem.Send<E>(e);
-        public IUnregister RegisterEvent<E>(Action<E> onEvent) => mTypeEventSystem.Register(onEvent);
-        public void CancelEvent<E>(Action<E> onEvent) => mTypeEventSystem.Unregister(onEvent);
+        public ICancel RegisterEvent<E>(Action<E> onEvent) => mTypeEventSystem.Register(onEvent);
+        public void CancelEvent<E>(Action<E> onEvent) => mTypeEventSystem.Cancel(onEvent);
     }
 }

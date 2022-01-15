@@ -30,10 +30,10 @@ namespace FrameworkDesign.Example
         private void Start()
         {
             typeEventSystem.Register<EventA>(new Action<EventA>(OnEventA));
-            typeEventSystem.Register<EventA>(onEventA => { }).UnregisterWhenGameObjectDestroy(gameObject);
-            typeEventSystem.Register<EventB>(onEventB => { Debug.Log($"onEventB {onEventB.ParamB}"); }).UnregisterWhenGameObjectDestroy(gameObject);
-            typeEventSystem.Register<EventB>(OnEventB).UnregisterWhenGameObjectDestroy(gameObject);
-            typeEventSystem.Register<IEventGroup>(e => { Debug.Log($"{e.GetType()}"); }).UnregisterWhenGameObjectDestroy(gameObject);
+            typeEventSystem.Register<EventA>(onEventA => { }).CancelWhenGameObjectDestroy(gameObject);
+            typeEventSystem.Register<EventB>(onEventB => { Debug.Log($"onEventB {onEventB.ParamB}"); }).CancelWhenGameObjectDestroy(gameObject);
+            typeEventSystem.Register<EventB>(OnEventB).CancelWhenGameObjectDestroy(gameObject);
+            typeEventSystem.Register<IEventGroup>(e => { Debug.Log($"{e.GetType()}"); }).CancelWhenGameObjectDestroy(gameObject);
 
         }
         private void Update()
@@ -48,6 +48,6 @@ namespace FrameworkDesign.Example
         }
         private void OnEventA(EventA obj) => Debug.Log("OnEventA");
         private void OnEventB(EventB obj) => Debug.Log($"OnEventB {obj.ParamB}");
-        private void OnDestroy() => typeEventSystem.Unregister<EventA>(OnEventA);
+        private void OnDestroy() => typeEventSystem.Cancel<EventA>(OnEventA);
     }
 }

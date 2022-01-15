@@ -8,41 +8,41 @@ namespace FrameworkDesign
     {
         void Send<T>() where T : new();
         void Send<T>(T e);
-        IUnregister Register<T>(Action<T> onEvent);
-        void Unregister<T>(Action<T> onEvent);
+        ICancel Register<T>(Action<T> onEvent);
+        void Cancel<T>(Action<T> onEvent);
     }
-    public interface IUnregister
+    public interface ICancel
     {
-        void Unregister();
+        void Cancel();
     }
-    public struct TypeEventSystemUnregister<T> : IUnregister
+    public struct TypeEventSystemCancel<T> : ICancel
     {
         public ITypeEventSystem typeEventSystem;
         public Action<T> OnEvent;
-        public void Unregister()
+        public void Cancel()
         {
-            typeEventSystem.Unregister<T>(OnEvent);
+            typeEventSystem.Cancel<T>(OnEvent);
             typeEventSystem = null;
             OnEvent = null;
         }
     }
-    public class UnregisterOnDestroyTrigger : MonoBehaviour
+    public class CancelOnDestroyTrigger : MonoBehaviour
     {
-        private HashSet<IUnregister> mUnregisters = new HashSet<IUnregister>();
-        public void AddUnregister(IUnregister unregister) => mUnregisters.Add(unregister);
+        private HashSet<ICancel> mCancel = new HashSet<ICancel>();
+        public void AddCancel(ICancel cancel) => mCancel.Add(cancel);
         private void OnDestroy()
         {
-            foreach(var unregister in mUnregisters) unregister.Unregister();
-            mUnregisters.Clear();
+            foreach(var cancel in mCancel) cancel.Cancel();
+            mCancel.Clear();
         }
     }
-    public static class UnregisterExtension
+    public static class CancelExtension
     {
-        public static void UnregisterWhenGameObjectDestroy(this IUnregister unregister, GameObject go)
+        public static void CancelWhenGameObjectDestroy(this ICancel cancel, GameObject go)
         {
-            var trigger = go.GetComponent<UnregisterOnDestroyTrigger>();
-            if (!trigger) go.AddComponent<UnregisterOnDestroyTrigger>();
-            else trigger.AddUnregister(unregister);
+            var trigger = go.GetComponent<CancelOnDestroyTrigger>();
+            if (!trigger) go.AddComponent<CancelOnDestroyTrigger>();
+            else trigger.AddCancel(cancel);
         }
     }
     public class TypeEventSystem : ITypeEventSystem
@@ -66,7 +66,7 @@ namespace FrameworkDesign
             var type = typeof(T);
             if (RegistrationsMap.TryGetValue(type, out var registrations)) ((Registrations<T>)registrations).OnEvent(e);
         }
-        public IUnregister Register<T>(Action<T> onEvent)
+        public ICancel Register<T>(Action<T> onEvent)
         {
             var type = typeof(T);
             if (!RegistrationsMap.TryGetValue(type, out var registrations))
@@ -75,13 +75,13 @@ namespace FrameworkDesign
                 RegistrationsMap.Add(type, registrations);
             }
             ((Registrations<T>)registrations).OnEvent += onEvent;
-            return new TypeEventSystemUnregister<T>()
+            return new TypeEventSystemCancel<T>()
             {
                 OnEvent = onEvent,
                 typeEventSystem = this
             };
         }
-        public void Unregister<T>(Action<T> onEvent)
+        public void Cancel<T>(Action<T> onEvent)
         {
             var type = typeof(T);
             if (RegistrationsMap.TryGetValue(type, out var registrations)) ((Registrations<T>)registrations).OnEvent -= onEvent;

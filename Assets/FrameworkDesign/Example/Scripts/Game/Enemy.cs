@@ -6,7 +6,7 @@ namespace FrameworkDesign.Example
     {
         private void OnMouseDown()
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
             this.SendCommand<KillEnemyCommand>();
         }
         public IArchitecture GetArchitecture() => PointGame.Interface;
