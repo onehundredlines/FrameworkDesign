@@ -1,6 +1,6 @@
 namespace FrameworkDesign
 {
-    public interface IUtility 
+    public interface IUtility  
     {
 
     }

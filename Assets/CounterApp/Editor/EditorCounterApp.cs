@@ -21,6 +21,6 @@ namespace CounterApp.Editor
             GUILayout.Label(CounterApp.Get<ICounterModel>().Count.Value.ToString());
             if (GUILayout.Button("-")) this.SendCommand<SubCountCommand>();
         }
-        IArchitecture IBelongToArchitecture.GetArchitecture() => CounterApp.Interface;
+        public IArchitecture GetArchitecture() => CounterApp.Interface;
     }
 }

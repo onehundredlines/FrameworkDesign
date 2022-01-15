@@ -1,6 +1,6 @@
 ﻿namespace FrameworkDesign.Example
 {
-    public struct GameStartEvent
+    public class GameStartEvent
     {
     }
 }

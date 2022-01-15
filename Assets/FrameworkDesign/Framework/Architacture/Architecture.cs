@@ -34,7 +34,7 @@ namespace FrameworkDesign
         void SendEvent<E>() where E : new();
         void SendEvent<E>(E e);
         IUnregister RegisterEvent<E>(Action<E> onEvent);
-        void UnregisterEvent<E>(Action<E> onEvent);
+        void CancelEvent<E>(Action<E> onEvent);
     }
     /// <summary>
     /// 架构
@@ -49,6 +49,8 @@ namespace FrameworkDesign
         private List<IModel> mModelList = new List<IModel>();
         // 缓存要初始化的System
         private List<ISystem> mSystemList = new List<ISystem>();
+        // 注册补丁
+        public static Action<T> OnRegisterPatch = architecture => { };
         // 类似单例，仅可在内部访问。与单例没有访问限制不同
         private static T mArchitecture;
         public static IArchitecture Interface {
@@ -57,9 +59,6 @@ namespace FrameworkDesign
                 return mArchitecture;
             }
         }
-        private readonly IOCContainer mContainer = new IOCContainer();
-        // 注册补丁
-        public static Action<T> OnRegisterPatch = architecture => { };
         /// <summary>
         /// 确保Container有实例
         /// </summary>
@@ -84,6 +83,7 @@ namespace FrameworkDesign
         /// 子类注册模块
         /// </summary>
         protected abstract void Init();
+        private IOCContainer mContainer = new IOCContainer();
         /// <summary>
         /// 注册模块API
         /// </summary>
@@ -146,6 +146,6 @@ namespace FrameworkDesign
         public void SendEvent<E>() where E : new() => mTypeEventSystem.Send<E>();
         public void SendEvent<E>(E e) => mTypeEventSystem.Send<E>(e);
         public IUnregister RegisterEvent<E>(Action<E> onEvent) => mTypeEventSystem.Register(onEvent);
-        public void UnregisterEvent<E>(Action<E> onEvent) => mTypeEventSystem.Unregister(onEvent);
+        public void CancelEvent<E>(Action<E> onEvent) => mTypeEventSystem.Unregister(onEvent);
     }
 }

@@ -28,7 +28,7 @@ namespace CounterApp
         }
         //表现逻辑
         private void OnCountChanged(int newValue) => transform.Find("TextCount").GetComponent<Text>().text = newValue.ToString();
-        IArchitecture IBelongToArchitecture.GetArchitecture() => CounterApp.Interface;
+        public IArchitecture GetArchitecture() => CounterApp.Interface;
     }
 
     public interface ICounterModel : IModel

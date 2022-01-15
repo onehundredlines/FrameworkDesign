@@ -5,6 +5,6 @@ namespace FrameworkDesign
     }
     public static class CanGetModelExtension
     {
-        public static T GetModel<T>(this ICanGetModel self) where T : class, IModel => self.GetArchitecture().GetModel<T>();
+        public static M GetModel<M>(this ICanGetModel self) where M : class, IModel => self.GetArchitecture().GetModel<M>();
     }
 }

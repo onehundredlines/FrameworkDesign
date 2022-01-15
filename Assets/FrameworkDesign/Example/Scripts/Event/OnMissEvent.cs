@@ -1,6 +1,6 @@
 namespace FrameworkDesign.Example
 {
-    public class GamePassEvent
+    public struct OnMissEvent
     {
     }
 }

@@ -14,6 +14,6 @@ namespace FrameworkDesign.Example
             });
         }
         private void OnDestroy() => transform.Find("StartButton").GetComponent<Button>().onClick.RemoveAllListeners();
-        IArchitecture IBelongToArchitecture.GetArchitecture() => PointGame.Interface;
+        public IArchitecture GetArchitecture() => PointGame.Interface;
     }
 }
