@@ -1,4 +1,4 @@
-using FrameworkDesign;
+using QFramework;
 namespace CounterApp
 {
     public class CounterApp : Architecture<CounterApp>

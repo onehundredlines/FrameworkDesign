@@ -1,4 +1,4 @@
-﻿using FrameworkDesign;
+﻿using QFramework;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +10,7 @@ namespace CounterApp
         //获取
         private void Awake() => mCounterModel = this.GetModel<ICounterModel>();
         //注册
-        private void OnEnable() => mCounterModel.Count.RegisterOnValueChanged(OnCountChanged);
+        private void OnEnable() => mCounterModel.Count.Register(OnCountChanged);
         private void Start()
         {
             //交互逻辑
@@ -22,7 +22,7 @@ namespace CounterApp
         private void OnDestroy()
         {
             //注销
-            mCounterModel.Count.CancelOnValueChanged(OnCountChanged);
+            mCounterModel.Count.Cancel(OnCountChanged);
             //回收
             mCounterModel = null;
         }
@@ -46,7 +46,7 @@ namespace CounterApp
         {
             var storage = this.GetUtility<IStorage>();
             Count.Value = storage.LoadInt("COUNTER_COUNT");
-            Count.RegisterOnValueChanged(count => storage.SaveInt("COUNT_COUNT", count));
+            Count.Register(count => storage.SaveInt("COUNT_COUNT", count));
         }
     }
 }

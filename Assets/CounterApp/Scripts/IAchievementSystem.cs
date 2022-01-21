@@ -1,4 +1,4 @@
-using FrameworkDesign;
+using QFramework;
 using UnityEngine;
 namespace CounterApp
 {
@@ -16,7 +16,7 @@ namespace CounterApp
             // var storage = Architecture.GetUtility<IStorage>();
             // storage.SaveInt();
             bool count18Unlock = false;
-            counterModel.Count.RegisterOnValueChanged(newCount =>
+            counterModel.Count.Register(newCount =>
             {
                 if (previousCount < 9 && newCount >= 9 && !count9Unlock)
                 {

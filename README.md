@@ -1,7 +1,7 @@
 
 <h1>学习QFramework的记录</h1>
 
-> QFramework框架的作者：凉鞋  
+> QFramework框架的作者：凉鞋<br>
 > QFramework框架的地址：https://qframework.cn
 
 <b>

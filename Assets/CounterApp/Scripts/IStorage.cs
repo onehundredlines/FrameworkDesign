@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using FrameworkDesign;
+using QFramework;
 using UnityEngine;
 namespace CounterApp
 {
