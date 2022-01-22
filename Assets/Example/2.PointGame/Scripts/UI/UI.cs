@@ -14,7 +14,7 @@ namespace QFramework.Example
             {
                 transform.Find("Canvas/GamePanel").gameObject.SetActive(false);
                 transform.Find("Canvas/GameOverPanel").gameObject.SetActive(true);
-            }).CancelWhenGameObjectDestroy(gameObject);
+            }).CancelOnDestroy(gameObject);
         }
         private void OnGameStart(OnGameStartEvent mobj) { transform.Find("Canvas/GamePanel").gameObject.SetActive(true); }
         private void OnDestroy() => this.CancelEvent<OnGamePassEvent>(OnGamePass);

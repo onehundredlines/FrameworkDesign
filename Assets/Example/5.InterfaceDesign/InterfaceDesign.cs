@@ -7,7 +7,7 @@ namespace QFramework.Example
         void SayHello();
         void SayOther();
     }
-    public class InterfaceDesignExample : MonoBehaviour, ICanSayHello
+    public class InterfaceDesign : MonoBehaviour, ICanSayHello
     {
         /// <summary>
         /// 接口的隐式实现

@@ -2,7 +2,7 @@
 using UnityEngine;
 namespace QFramework.Example
 {
-    public class TypeEventSystemExample : MonoBehaviour
+    public class TypeEventSystem : MonoBehaviour
     {
         public struct EventA
         {
@@ -21,14 +21,14 @@ namespace QFramework.Example
         public struct EventD : IEventGroup
         {
         }
-        private TypeEventSystem typeEventSystem = new TypeEventSystem();
+        private QFramework.TypeEventSystem typeEventSystem = new QFramework.TypeEventSystem();
         private void Start()
         {
             typeEventSystem.Register<EventA>(new Action<EventA>(OnEventA));
-            typeEventSystem.Register<EventA>(onEventA => { }).CancelWhenGameObjectDestroy(gameObject);
-            typeEventSystem.Register<EventB>(onEventB => { Debug.Log($"onEventB {onEventB.ParamB}"); }).CancelWhenGameObjectDestroy(gameObject);
-            typeEventSystem.Register<EventB>(OnEventB).CancelWhenGameObjectDestroy(gameObject);
-            typeEventSystem.Register<IEventGroup>(e => { Debug.Log($"{e.GetType()}"); }).CancelWhenGameObjectDestroy(gameObject);
+            typeEventSystem.Register<EventA>(onEventA => { }).CancelOnDestroy(gameObject);
+            typeEventSystem.Register<EventB>(onEventB => { Debug.Log($"onEventB {onEventB.ParamB}"); }).CancelOnDestroy(gameObject);
+            typeEventSystem.Register<EventB>(OnEventB).CancelOnDestroy(gameObject);
+            typeEventSystem.Register<IEventGroup>(e => { Debug.Log($"{e.GetType()}"); }).CancelOnDestroy(gameObject);
 
         }
         private void Update()

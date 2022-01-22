@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace QFramework.Example
 {
-    public class InterfaceStructExample : MonoBehaviour
+    public class InterfaceStruct : MonoBehaviour
     {
         public interface ICustomScript
         {

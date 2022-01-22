@@ -38,7 +38,7 @@ namespace QFramework.Example
     /// <summary>
     /// 静态扩展
     /// </summary>
-    public class InterfaceRuleExample : MonoBehaviour
+    public class InterfaceRule : MonoBehaviour
     {
         public class OnlyDo1 : ICanDoSomething1
         {

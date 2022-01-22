@@ -1,38 +1,18 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 namespace QFramework
 {
     #region Architecture
     public interface IArchitecture
     {
-        /// <summary>
-        /// 注册System系统层
-        /// </summary>
         void RegisterSystem<TSystem>(TSystem system) where TSystem : ISystem;
-        TSystem GetSystem<TSystem>() where TSystem : class, ISystem;
-        /// <summary>
-        /// 注册Model数据层
-        /// </summary>
         void RegisterModel<TModel>(TModel model) where TModel : IModel;
-        TModel GetModel<TModel>() where TModel : class, IModel;
-        /// <summary>
-        /// 注册Utility工具层
-        /// </summary>
         void RegisterUtility<TUtility>(TUtility utility) where TUtility : IUtility;
-        /// <summary>
-        /// 获取Utility工具
-        /// 获取API
-        /// </summary>
+        TSystem GetSystem<TSystem>() where TSystem : class, ISystem;
+        TModel GetModel<TModel>() where TModel : class, IModel;
         TUtility GetUtility<TUtility>() where TUtility : class, IUtility;
-        /// <summary>
-        /// 创建Command，并将Command发送给Architecture
-        /// </summary>
         void SendCommand<TCommand>() where TCommand : ICommand, new();
-        /// <summary>
-        /// 将Command发送给Architecture
-        /// </summary>
         void SendCommand<TCommand>(TCommand command) where TCommand : ICommand;
         TResult SendQuery<TResult>(IQuery<TResult> query);
         void SendEvent<TEvent>() where TEvent : new();
@@ -40,14 +20,12 @@ namespace QFramework
         ICancel RegisterEvent<TEvent>(Action<TEvent> onEvent);
         void CancelEvent<TEvent>(Action<TEvent> onEvent);
     }
-    /// <summary>
-    /// 架构
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
     public abstract class Architecture<T> : IArchitecture where T : Architecture<T>, new()
     {
-        // 是否初始化完成
-        private bool mInited;
+        /// <summary>
+        /// 是否初始化完成
+        /// </summary>
+        private bool isInitialized;
         // 缓存要初始化的Model
         private readonly List<IModel> mModelList = new List<IModel>();
         // 缓存要初始化的System
@@ -80,58 +58,32 @@ namespace QFramework
             foreach(var system in mArchitecture.mSystemList) system.Init();
             //清空System
             mArchitecture.mSystemList.Clear();
-            mArchitecture.mInited = true;
+            mArchitecture.isInitialized = true;
         }
         /// <summary>
         /// 子类注册模块
         /// </summary>
         protected abstract void Init();
         private readonly IOCContainer mContainer = new IOCContainer();
-        /// <summary>
-        /// 注册模块API
-        /// </summary>
-        [UsedImplicitly]
-        private static void Register<K>(K instance)
-        {
-            MakeSureArchitecture();
-            mArchitecture.mContainer.Register(instance);
-        }
-        /// <summary>
-        /// 注册System层
-        /// 注册API
-        /// </summary>
         public void RegisterSystem<TSystem>(TSystem system) where TSystem : ISystem
         {
             //给System赋值
             system.SetArchitecture(this);
             mContainer.Register(system);
-            if (!mInited) mSystemList.Add(system);
+            if (!isInitialized) mSystemList.Add(system);
             else system.Init();
         }
-        /// <summary>
-        /// 注册Model层
-        /// 注册API
-        /// </summary>
         public void RegisterModel<TModel>(TModel model) where TModel : IModel
         {
             //给Model赋值
             model.SetArchitecture(this);
             mContainer.Register(model);
-            if (!mInited) mModelList.Add(model);
+            if (!isInitialized) mModelList.Add(model);
             else model.Init();
         }
         public void RegisterUtility<TUtility>(TUtility utility) where TUtility : IUtility => mContainer.Register(utility);
-        /// <summary>
-        /// 获取System模块
-        /// </summary>
         public TSystem GetSystem<TSystem>() where TSystem : class, ISystem => mContainer.Get<TSystem>();
-        /// <summary>
-        /// 获取Model模块
-        /// </summary>
         public TModel GetModel<TModel>() where TModel : class, IModel => mContainer.Get<TModel>();
-        /// <summary>
-        /// 获取Utility模块
-        /// </summary>
         public TUtility GetUtility<TUtility>() where TUtility : class, IUtility => mContainer.Get<TUtility>();
         public void SendCommand<TCommand>() where TCommand : ICommand, new()
         {
@@ -158,19 +110,14 @@ namespace QFramework
         public void CancelEvent<TEvent>(Action<TEvent> onEvent) => mTypeEventSystem.Cancel(onEvent);
     }
     #endregion
-
     #region Controller
     public interface IController : ICanGetModel, ICanGetSystem, ICanSendCommand, ICanRegisterEvent, ICanSentQuery
     {
     }
     #endregion
-
     #region System
     public interface ISystem : ICanSetArchitecture, ICanGetModel, ICanGetUtility, ICanRegisterEvent, ICanSendEvent, ICanGetSystem
     {
-        /// <summary>
-        /// System本身需要有状态，需要有初始化
-        /// </summary>
         void Init();
     }
     public abstract class AbstractSystem : ISystem
@@ -178,14 +125,10 @@ namespace QFramework
         private IArchitecture mArchitecture;
         IArchitecture IBelongToArchitecture.GetArchitecture() => mArchitecture;
         void ICanSetArchitecture.SetArchitecture(IArchitecture architecture) => mArchitecture = architecture;
-        /// <summary>
-        /// 这里使用接口的显式实现，为了隔离功能，限制子类的调用
-        /// </summary>
         void ISystem.Init() => OnInit();
         protected abstract void OnInit();
     }
     #endregion
-
     #region Model
     public interface IModel : ICanSetArchitecture, ICanGetUtility, ICanSendEvent
     {
@@ -196,20 +139,15 @@ namespace QFramework
         private IArchitecture mArchitecture;
         IArchitecture IBelongToArchitecture.GetArchitecture() => mArchitecture;
         void ICanSetArchitecture.SetArchitecture(IArchitecture architecture) => mArchitecture = architecture;
-        /// <summary>
-        /// 这里使用接口的显式实现，为了隔离功能，限制子类的调用
-        /// </summary>
         void IModel.Init() { OnInit(); }
         protected abstract void OnInit();
     }
     #endregion
-
     #region Utility
     public interface IUtility
     {
     }
     #endregion
-
     #region Command
     public interface ICommand : ICanSetArchitecture, ICanGetModel, ICanGetSystem, ICanSendCommand, ICanGetUtility, ICanSendEvent, ICanSentQuery
     {
@@ -220,14 +158,10 @@ namespace QFramework
         private IArchitecture mArchitecture;
         IArchitecture IBelongToArchitecture.GetArchitecture() => mArchitecture;
         void ICanSetArchitecture.SetArchitecture(IArchitecture architecture) => mArchitecture = architecture;
-        /// <summary>
-        /// 这里使用接口的显式实现，为了隔离功能，限制子类的调用
-        /// </summary>
         void ICommand.Execute() => OnExecute();
         protected abstract void OnExecute();
     }
     #endregion
-
     #region Query
     public interface IQuery<out TResult> : ICanSetArchitecture, ICanGetModel, ICanGetSystem, ICanSentQuery
     {
@@ -242,7 +176,6 @@ namespace QFramework
         public IArchitecture GetArchitecture() => mArchitecture;
     }
     #endregion
-
     #region Rule
     public interface IBelongToArchitecture
     {
@@ -305,7 +238,6 @@ namespace QFramework
         public static TResult SendQuery<TResult>(this ICanSentQuery self, IQuery<TResult> query) => self.GetArchitecture().SendQuery(query);
     }
     #endregion
-
     #region TypeEventSystem
     public interface ITypeEventSystem
     {
@@ -341,7 +273,7 @@ namespace QFramework
     }
     public static class CancelExtension
     {
-        public static void CancelWhenGameObjectDestroy(this ICancel cancel, GameObject go)
+        public static void CancelOnDestroy(this ICancel cancel, GameObject go)
         {
             var trigger = go.GetComponent<CancelOnDestroyTrigger>();
             if (!trigger) go.AddComponent<CancelOnDestroyTrigger>();
@@ -350,18 +282,15 @@ namespace QFramework
     }
     public class TypeEventSystem : ITypeEventSystem
     {
-        public interface IRegistrations
+        private interface IRegistrations
         {
         }
-        public class Registrations<T> : IRegistrations
+        private class Registrations<T> : IRegistrations
         {
             public Action<T> OnEvent = e => { };
         }
-        /// <summary>
-        /// 新增一个全局使用的API，不用再去单独维护事件相关工作
-        /// </summary>
         public static readonly TypeEventSystem Global = new TypeEventSystem();
-        public readonly Dictionary<Type, IRegistrations> RegistrationsMap = new Dictionary<Type, IRegistrations>();
+        private readonly Dictionary<Type, IRegistrations> RegistrationsMap = new Dictionary<Type, IRegistrations>();
         public void Send<TEvent>() where TEvent : new()
         {
             var e = new TEvent();
@@ -403,7 +332,6 @@ namespace QFramework
         public static void Cancel<T>(this IOnEvent<T> self) where T : struct => TypeEventSystem.Global.Cancel<T>(self.OnEvent);
     }
     #endregion
-
     #region IOC
     public class IOCContainer
     {
@@ -422,11 +350,7 @@ namespace QFramework
         }
     }
     #endregion
-
     #region BindableProperty
-    /// <summary>
-    /// 数据 + 数据变更事件，节省代码量
-    /// </summary>
     public class BindableProperty<T>
     {
         private T mValue;
